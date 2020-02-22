@@ -1,0 +1,12 @@
+#include "..\version.bgt"
+#include "util.bgt"
+
+/*
+** Main entry point of the game.
+*/
+void main()
+{
+  show_game_window("Minehunter " + VERSION);
+  Assert(UniversalSpeech.load("UniversalSpeech.dll"),
+    "Unable to load UniversalSpeech");
+}

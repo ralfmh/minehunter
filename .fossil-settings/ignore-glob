@@ -1,0 +1,6 @@
+*.bat
+*.dll
+*.ogg
+BGT/*
+out/*
+version.bgt

@@ -1,0 +1,122 @@
+/*
+** Boolean value indicating whether the braille status monitor is on.
+*/
+bool StatusMonitor = false;
+
+library UniversalSpeech;  // UniversalSpeech library object.
+
+/*
+** This function evaluates an expression and terminates the script execution
+** if the result is false.
+*/
+void Assert(
+  bool expression,  // The expression to be evaluated.
+  string failedMessage = "" // Details about the assertion failure.
+)
+{
+  if (!expression)
+  {
+    string message = "An assertion failure occurred.\n";
+    if (!failedMessage.is_empty())
+    {
+      message += failedMessage + "\n";
+    }
+    message += get_call_stack();
+    alert("Error", message);
+    exit();
+  }
+}
+
+/*
+** Displays a message on the braille display.
+*/
+void BrailleDisplay(
+  string message  // The message to display.
+)
+{
+  UniversalSpeech.call("int brailleDisplayA (const char* str);", message);
+}
+
+/*
+** Returns the larger of two integer values.
+*/
+int Max(
+  int a,  // The first of two integer values to compare.
+  int b // The second of two integer values to compare.
+)
+{
+  if (b > a)
+  {
+    return b;
+  }
+  return a;
+}
+
+/*
+** Returns the smaller of two integer values.
+*/
+int Min(
+  int a,  // The first of two integer values to compare.
+  int b // The second of two integer values to compare.
+)
+{
+  if (b < a)
+  {
+    return b;
+  }
+  return a;
+}
+
+/*
+** Speaks a message which must be dismissed by pressing enter
+** before the game continues.
+*/
+void Prompt(
+  string message  // The message to speak.
+)
+{
+  Speak(message);
+  int[] keys;
+  while (true)
+  {
+    keys = keys_pressed();
+    if (keys.find(KEY_RETURN) > -1)
+    {
+      return;
+    }
+    else if (keys.length > 0)
+    {
+      Speak(message);
+    }
+  }
+}
+
+/*
+** Speaks a message.
+*/
+void Speak(
+  string message	// The message to speak.
+)
+{
+  screen_reader_speak(4, message);
+  if (!StatusMonitor)
+  {
+    BrailleDisplay(message);
+  }
+}
+
+/*
+** Left-aligns the characters in a string by padding them with spaces
+** on the right, for a specified total length.
+*/
+string StringPadRight(
+  string value, // The string to pad with spaces.
+  int totalLength // The number of characters in the resulting string.
+)
+{
+  for (int i = value.length(); i < totalLength; i++)
+  {
+    value += " ";
+  }
+  return value;
+}

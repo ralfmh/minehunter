@@ -1,0 +1,6 @@
+*.bgt
+*.md
+*.test
+*.txt
+*.wiki
+.fossil-settings/*

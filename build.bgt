@@ -1,0 +1,107 @@
+const string BUILD_SCRIPT = "build.bgt";  // Filename of the build script.
+const string MAIN_SCRIPT = "main.bgt"; // Filename of the main script to build.
+const string VERSION_TAG = "version-";  // Tag name of release versions.
+
+void main()
+{
+  string currentDirectory = string_trim_right(SCRIPT_CURRENT_FILE,
+    BUILD_SCRIPT.length());
+  string outputDirectory = currentDirectory + "out";
+  string srcDirectory = currentDirectory + "src\\";
+  string mainScript = srcDirectory + MAIN_SCRIPT;
+  string executable = string_trim_right(mainScript, 3) + "exe";
+  show_game_window("build");
+  string build = read_environment_variable("build");
+  if (build != "-c" && build != "-C")
+  {
+    alert("build", "Environment variable 'build' must be set to -c or -C");
+    exit();
+  }
+  if (!file_exists(mainScript))
+  {
+    alert("build", "Main script '" + mainScript + "' does not exist");
+    exit();
+  }
+  file manifest;
+  if (!manifest.open(currentDirectory + "manifest.uuid", "r"))
+  {
+    alert("build", "Unable to open manifest.uuid file");
+    exit();
+  }
+  string checkin = string_replace(manifest.read(), "\n", "", true);
+  if (checkin.is_empty())
+  {
+    alert("build", "Unable to read checkin");
+    exit();
+  }
+  if (!manifest.close())
+  {
+    alert("build", "Unable to close manifest.uuid file");
+    exit();
+  }
+  file tags;
+  if (!tags.open(currentDirectory + "manifest.tags", "r"))
+  {
+    alert("build", "Unable to open manifest.tags file");
+    exit();
+  }
+  string tagsContent = tags.read();
+  if (tagsContent.is_empty())
+  {
+    alert("build", "Unable to read tags");
+    exit();
+  }
+  if (!tags.close())
+  {
+    alert("build", "Unable to close manifest.tags file");
+    exit();
+  }
+  string[] tagLines = string_split(tagsContent, "\n", true);
+  string[] tag;
+  string tagName;
+  for (int i = 0; i < tagLines.length; i++)
+  {
+    tag = string_split(tagLines[i], " ", true);
+    if (tag.length == 2 && tag[0] == "tag" && string_contains(tag[1],
+      VERSION_TAG, 1) == 0)
+    {
+      tagName = string_trim_left(tag[1], VERSION_TAG.length());
+    }
+  }
+  if (tagName.is_empty())
+  {
+    tagName = "Development";
+  }
+  file version;
+  if (!version.open(currentDirectory + "version.bgt", "w"))
+  {
+    alert("build", "Unable to open version.bgt file");
+    exit();
+  }
+  version.write("const string CHECKIN = \"" + checkin + "\";\n");
+  version.write("const string VERSION = \"" + tagName + "\";");
+  if (!version.close())
+  {
+    alert("build", "Unable to close version.bgt file");
+    exit();
+  }
+  if (!run("BGT\\bgt.exe", build + "\"" + mainScript + "\"", true, false))
+  {
+    alert("build", "Unable to run BGT interpreter");
+    exit();
+  }
+  if (!file_exists(executable))
+  {
+    exit();
+  }
+  if (!file_copy(executable, outputDirectory + "\\Boat.exe", true))
+  {
+    alert("build", "Unable to copy executable '" + executable + "'");
+    exit();
+  }
+  if (!file_delete(executable))
+  {
+    alert("build", "Unable to delete executable '" + executable + "'");
+    exit();
+  }
+}

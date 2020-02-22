@@ -1,0 +1,77 @@
+/*
+** Checks each BGT script in the src directory
+** by creating an empty script with a main function, including each script
+** and running the interpreter on it.
+*/
+
+/*
+** Defines the full path to the BGT interpreter.
+*/
+const string BGT_PATH = "BGT\\bgt.exe";
+
+/*
+** Defines the main script that includes/uses all other scripts.
+** It will be excluded during the check.
+*/
+const string MAIN_SCRIPT = "main.bgt";
+
+/*
+** Defines the script that is used to check each other script.
+*/
+const string TEST_SCRIPT = TIME_SYSTEM_RUNNING_MILLISECONDS + ".bgt";
+
+int CheckedFiles = 0;  // The number of checked files.
+
+/*
+** Main function.
+*/
+void main()
+{
+  show_game_window("checking...");
+  string[] splitCurrentScript = string_split(SCRIPT_CURRENT_FILE, "\\", true);
+  string currentScript = splitCurrentScript[splitCurrentScript.length() - 1];
+  if (file_exists(TEST_SCRIPT))
+  {
+    alert("check", "Test script " + TEST_SCRIPT + " already exists.");
+    exit();
+  }
+  string[] files = find_files("src/*.bgt");
+  for (int i = 0; i < files.length(); i++)
+  {
+    if (files[i] == MAIN_SCRIPT)
+    {
+      continue;
+    }
+    CheckScript("src/" + files[i]);
+  }
+  if (!file_delete(TEST_SCRIPT))
+  {
+    alert("check", "Unable to delete test script " + TEST_SCRIPT);
+    exit();
+  }
+  alert("check", CheckedFiles + " files checked.");
+}
+
+/*
+** Checks the given script for errors.
+*/
+void CheckScript(
+  string scriptPath  // Relative path to the script file.
+)
+{
+  file testScript;
+  if (!testScript.open(TEST_SCRIPT, "w"))
+  {
+    alert("check", "Unable to open test script " + TEST_SCRIPT);
+    exit();
+  }
+  testScript.write("#include \"" + scriptPath + "\"\r\n\r\n");
+  testScript.write("void main()\r\n{\r\n}");
+  testScript.close();
+  if (!run(BGT_PATH, TEST_SCRIPT, true, false))
+  {
+    alert("check", "Unable to run test script " + TEST_SCRIPT);
+    exit();
+  }
+  CheckedFiles++;
+}
