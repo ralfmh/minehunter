@@ -1,3 +1,4 @@
+#include "direction.bgt"
 #include "square.bgt"
 
 /*
@@ -34,6 +35,42 @@ final class Minefield
     this.x = 0;
     this.y = 0;
     this.SpeakSquare();
+  }
+  
+  /*
+  ** Moves to another position on the minefield.
+  */
+  void Move(
+    Direction direction // The direction in which to move.
+  )
+  {
+    int oldX = this.x;
+    int oldY = this.y;
+    switch (direction)
+    {
+      case Down:
+        this.y++;
+        break;
+      case Left:
+        this.x--;
+        break;
+      case Right:
+        this.x++;
+        break;
+      case Up:
+        this.y--;
+        break;
+    }
+    if (this.x < 0 || this.x > (this.grid.length - 1) || this.y < 0
+      || this.y > (this.grid[0].length - 1))
+    {
+      this.x = oldX;
+      this.y = oldY;
+    }
+    else
+    {
+      this.SpeakSquare();
+    }
   }
   
   /*
