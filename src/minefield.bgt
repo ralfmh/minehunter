@@ -1,0 +1,31 @@
+#include "square.bgt"
+
+/*
+** Represents the minefield.
+*/
+final class Minefield
+{
+  private Square[][] grid(10);  // Grid of minefield squares.
+  
+  /*
+  ** Initializes a new instance of the Minefield class.
+  */
+  Minefield()
+  {
+    for (int i = 0; i < 10; i++)
+    {
+      grid[i].resize(10);
+    }
+    int x, y;
+    for (int i = 0; i < 50; i++)
+    {
+      do
+      {
+        x = random(0, 9);
+        y = random(0, 9);
+      } while ((x == y && (x == 0 || x == 9))
+        || (x == 0 && y == 9) || (x == 9 && y == 0));
+      grid[x][y] = Mine;
+    }
+  }
+}

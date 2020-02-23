@@ -1,5 +1,5 @@
 #include "..\version.bgt"
-#include "square.bgt"
+#include "minefield.bgt"
 #include "util.bgt"
 
 /*
@@ -10,20 +10,5 @@ void main()
   show_game_window("Minehunter " + VERSION);
   Assert(UniversalSpeech.load("UniversalSpeech.dll"),
     "Unable to load UniversalSpeech");
-  Square[][] grid(10);
-  for (int i = 0; i < 10; i++)
-  {
-    grid[i].resize(10);
-  }
-  int x, y;
-  for (int i = 0; i < 50; i++)
-  {
-    do
-    {
-      x = random(0, 9);
-      y = random(0, 9);
-    } while ((x == y && (x == 0 || x == 9))
-      || (x == 0 && y == 9) || (x == 9 && y == 0));
-    grid[x][y] = Mine;
-  }
+  Minefield minefield;
 }
