@@ -111,12 +111,30 @@ final class Minefield
   }
   
   /*
+  ** Pans a sound based on the current position on the minefield.
+  */
+  private void PanSound(
+    sound@ soundToPan // The sound to pan.
+  )
+  {
+    if (this.x < 5)
+    {
+      soundToPan.pan = -100 + (this.x * 20);
+    }
+    else
+    {
+      soundToPan.pan = 0 + ((this.x - 4) * 20);
+    }
+  }
+  
+  /*
   ** Reveals the current square. Returns true if the current square was empty,
   ** false if it contained a mine.
   */
   bool Reveal()
   {
     bool isEmpty = true;
+    this.PanSound(this.revealSound);
     this.revealSound.play_wait();
     switch (this.grid[this.x][this.y])
     {
