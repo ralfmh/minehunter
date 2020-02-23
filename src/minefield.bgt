@@ -134,11 +134,11 @@ final class Minefield
   {
     if (this.x < 5)
     {
-      soundToPan.pan = -100 + (this.x * 20);
+      soundToPan.pan = -50 + (this.x * 10);
     }
     else
     {
-      soundToPan.pan = 0 + ((this.x - 4) * 20);
+      soundToPan.pan = 0 + ((this.x - 4) * 10);
     }
   }
   
