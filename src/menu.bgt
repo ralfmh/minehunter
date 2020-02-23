@@ -1,0 +1,163 @@
+#include "const.bgt"
+#include "util.bgt"
+
+/*
+** Represents a simple up-down menu.
+*/
+class Menu
+{
+  private string[] items;  // Array of menu items.
+  
+  int LastItemIndex = -1;  // The 0-based index of the last item in the menu.
+  
+  int Selected = -1;  // Index of the selected item.
+  
+  private dictionary values;  // Dictionary of item values.
+  
+  /*
+  ** Adds an item to the menu.
+  */
+  void Add(
+    string item // The text of the item.
+  ) final
+  {
+    this.items.insert_last(item);
+    this.LastItemIndex++;
+  }
+  
+  /*
+  ** Adds an item to the menu.
+  */
+  void Add(
+    string item,  // The text of the item.
+    string value  // The item value.
+  ) final
+  {
+    this.Add(item);
+    this.values.set(this.LastItemIndex, value);
+  }
+  
+  /*
+  ** Adds an item to the menu.
+  */
+  void Add(
+    string item,  // The text of the item.
+    int value // The item value.
+  ) final
+  {
+    this.Add(item);
+    this.values.set(this.LastItemIndex, value);
+  }
+  
+  /*
+  ** This method is called from the menu loop and can be overridden
+  ** to perform custom actions.
+  */
+  void Callback()
+  {
+  }
+  
+  /*
+  ** Removes all menu items.
+  */
+  void Clear() final
+  {
+    this.items.resize(0);
+    this.LastItemIndex = -1;
+    this.Selected = -1;
+    this.values.delete_all();
+  }
+  
+  /*
+  ** Gets the value of a menu item.
+  */
+  bool GetValue(
+    int index,  // The 0-based index of the item.
+    string &out value // The retrieved value.
+  ) final
+  {
+    return this.values.get(index, value);
+  }
+
+  /*
+  ** Gets the value of a menu item.
+  */
+  bool GetValue(
+    int index,  // The 0-based index of the item.
+    int &out value  // The retrieved value.
+  ) final
+  {
+    return this.values.get(index, value);
+  }
+
+  /*
+  ** Runs the menu. Returns the index of the selected item,
+  ** or -1 if escape was pressed.
+  */
+  int Run(
+    string introText, // The text to speak as introduction.
+    sound@ menuMusic = null // Handle to a menu background music.
+  ) final
+  {
+    Assert(this.items.length > 0, "No items were added to the '"
+      + introText + "' menu");
+    if (!introText.is_empty())
+    {
+      Speak(introText);
+    }
+    while (true)
+    {
+      this.Callback();
+      if (key_pressed(KEY_RETURN) && this.Selected > -1)
+      {
+        break;
+      }
+      else if (key_pressed(KEY_ESCAPE)
+        || (key_down(KEY_LMENU) && key_pressed(KEY_F4)))
+      {
+        this.Selected = -1;
+        break;
+      }
+      else if (key_pressed(KEY_DOWN) && this.Selected < this.LastItemIndex)
+      {
+        this.Selected++;
+        Speak(this.items[this.Selected]);
+      }
+      else if (key_pressed(KEY_UP) && this.Selected > 0)
+      {
+        this.Selected--;
+        Speak(this.items[this.Selected]);
+      }
+      else if (key_pressed(KEY_HOME) && this.Selected > 0)
+      {
+        this.Selected = 0;
+        Speak(this.items[this.Selected]);
+      }
+      else if (key_pressed(KEY_END) && this.Selected < this.LastItemIndex)
+      {
+        this.Selected = this.LastItemIndex;
+        Speak(this.items[this.Selected]);
+      }
+      else if (key_pressed(KEY_F3) && @menuMusic != null
+        && menuMusic.volume > MIN_VOLUME)
+      {
+        menuMusic.volume = menuMusic.volume - 1;
+      }
+      else if (key_pressed(KEY_F4) && @menuMusic != null
+        && menuMusic.volume < MAX_VOLUME)
+      {
+        menuMusic.volume = menuMusic.volume + 1;
+      }
+      else if (key_pressed(KEY_F2) && @menuMusic != null)
+      {
+        menuMusic.volume = MIN_VOLUME;
+      }
+      else if (key_pressed(KEY_F5) && @menuMusic != null)
+      {
+        menuMusic.volume = MAX_VOLUME;
+      }
+      wait(10);
+    }
+    return this.Selected;
+  }
+}
