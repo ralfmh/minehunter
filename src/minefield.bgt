@@ -8,6 +8,8 @@ final class Minefield
 {
   private sound@[] explosionSound;  // Explosion sound.
   
+  private timer gameTimer;  // Game timer.
+  
   private Square[][] grid(10);  // Grid of minefield squares.
   
   /*
@@ -19,6 +21,8 @@ final class Minefield
   ** Played commentary sound before the explosion.
   */
   private sound@[] preExplosionCommentary;
+  
+  private int revealedSquares;  // Number of revealed squares.
   
   private sound@[] revealedStepSound; // Step sounds for revealed squares.
   
@@ -88,6 +92,8 @@ final class Minefield
       Assert(commentary.load(soundFile), "Unable to load '" + soundFile + "'");
       this.preExplosionCommentary.insert_last(commentary);
     }
+    this.revealedSquares = 0;
+    this.gameTimer.restart();
     this.SpeakSquare();
   }
   
@@ -207,6 +213,7 @@ final class Minefield
     {
       case Empty:
         this.grid[this.x][this.y] = Revealed;
+        this.revealedSquares++;
         Speak(this.GetSurroundingMines());
         break;
       case Mine:
@@ -224,7 +231,8 @@ final class Minefield
           this.postExplosionCommentary[random(0,
             this.postExplosionCommentary.length - 1)].play_wait();
         }
-        Prompt("boom!");
+        Prompt("Um " + this.revealedSquares + " Felder auszugraben, hast du "
+          + MillisecondsToTimeString(this.gameTimer.elapsed) + " benötigt.");
         isEmpty = false;
         break;
     }
