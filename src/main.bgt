@@ -1,5 +1,6 @@
 #include "..\version.bgt"
 #include "direction.bgt"
+#include "menu.bgt"
 #include "minefield.bgt"
 #include "util.bgt"
 
@@ -11,7 +12,18 @@ void main()
   show_game_window("Minehunter " + VERSION);
   Assert(UniversalSpeech.load("UniversalSpeech.dll"),
     "Unable to load UniversalSpeech");
-  Minefield@ minefield = Minefield();
+  Menu mineMenu;
+  mineMenu.Add(10, 10);
+  mineMenu.Add(20, 20);
+  mineMenu.Add(30, 30);
+  mineMenu.Add(40, 40);
+  mineMenu.Add(50, 50);
+  int mines = mineMenu.Run("Bitte wähle die Anzahl der Minen aus:");
+  if (mines == -1 || !mineMenu.GetValue(mines, mines))
+  {
+    return;
+  }
+  Minefield@ minefield = Minefield(mines);
   while (true)
   {
     if (key_pressed(KEY_DOWN))
@@ -34,7 +46,7 @@ void main()
     {
       if (!minefield.Reveal())
       {
-        @minefield = Minefield();
+        @minefield = Minefield(mines);
       }
     }
     else if (key_down(KEY_LMENU) && key_pressed(KEY_F4))
