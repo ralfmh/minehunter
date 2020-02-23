@@ -53,6 +53,51 @@ int Max(
 }
 
 /*
+** Converts the number of elapsed millisecons of a timer into
+** a German time string.
+*/
+string MillisecondsToTimeString(
+  double milliseconds  // The number of millisecons to convert.
+)
+{
+  milliseconds /= 1000;
+  int minutes = 0;
+  if (milliseconds >= 60)
+  {
+    minutes = milliseconds / 60;
+  }
+  int seconds = milliseconds % 60;
+  string time;
+  if (minutes > 0)
+  {
+    if (minutes == 1)
+    {
+      time = "eine Minute";
+    }
+    else
+    {
+      time = minutes + " Minuten";
+    }
+  }
+  if (seconds > 0)
+  {
+    if (!time.is_empty())
+    {
+      time += " und ";
+    }
+    if (seconds == 1)
+    {
+      time += "eine Sekunde";
+    }
+    else
+    {
+      time += seconds + " Sekunden";
+    }
+  }
+  return time;
+}
+
+/*
 ** Returns the smaller of two integer values.
 */
 int Min(
