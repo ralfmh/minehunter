@@ -74,6 +74,26 @@ final class Minefield
   }
   
   /*
+  ** Reveals the current square. Returns true if the current square was empty,
+  ** false if it contained a mine.
+  */
+  bool Reveal()
+  {
+    bool isEmpty = true;
+    switch (this.grid[this.x][this.y])
+    {
+      case Empty:
+        this.grid[this.x][this.y] = Revealed;
+        break;
+      case Mine:
+        Prompt("boom!");
+        isEmpty = false;
+        break;
+    }
+    return isEmpty;
+  }
+  
+  /*
   ** Speaks the current square.
   */
   private void SpeakSquare()
