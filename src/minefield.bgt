@@ -194,6 +194,10 @@ final class Minefield
   */
   bool Reveal()
   {
+    if (this.grid[this.x][this.y] == Revealed)
+    {
+      return true;
+    }
     int commentary;
     bool isEmpty = true;
     int soundIndex;
