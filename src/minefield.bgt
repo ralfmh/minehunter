@@ -123,9 +123,16 @@ final class Minefield
     }
     if (mines == 0)
     {
-      return "Keine Minen";
+      return "Keine Minen in der Nähe.";
     }
-    return mines + " Minen";
+    else if (mines == 1)
+    {
+      return "Eine Mine in der Nähe.";
+    }
+    else
+    {
+      return mines + " Minen in der Nähe.";
+    }
   }
   
   /*
