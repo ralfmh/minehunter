@@ -8,6 +8,8 @@ final class Minefield
 {
   private Square[][] grid(10);  // Grid of minefield squares.
   
+  private sound revealSound;  // Reveal sound.
+  
   private int x;  // Current x position on the minefield.
   
   private int y;  // Current y position on the minefield.
@@ -35,6 +37,9 @@ final class Minefield
     }
     this.x = 0;
     this.y = 0;
+    string soundFile = "sound/reveal.ogg";
+    Assert(this.revealSound.load(soundFile),
+      "Unable to load '" + soundFile + "'");
     this.SpeakSquare();
   }
   
@@ -112,6 +117,7 @@ final class Minefield
   bool Reveal()
   {
     bool isEmpty = true;
+    this.revealSound.play_wait();
     switch (this.grid[this.x][this.y])
     {
       case Empty:
