@@ -6,6 +6,8 @@
 */
 final class Minefield
 {
+  private sound@[] explosionSound;  // Explosion sound.
+  
   private Square[][] grid(10);  // Grid of minefield squares.
   
   private sound@[] revealedStepSound; // Step sounds for revealed squares.
@@ -54,6 +56,13 @@ final class Minefield
       soundFile = "sound/unknown" + i + ".ogg";
       Assert(unknown.load(soundFile), "Unable to load '" + soundFile + "'");
       this.unknownStepSound.insert_last(unknown);
+    }
+    for (int i = 1; i < 4; i++)
+    {
+      sound explosion;
+      soundFile = "sound/explosion" + i + ".ogg";
+      Assert(explosion.load(soundFile), "Unable to load '" + soundFile + "'");
+      this.explosionSound.insert_last(explosion);
     }
     this.SpeakSquare();
   }
@@ -161,6 +170,7 @@ final class Minefield
   */
   bool Reveal()
   {
+    int soundIndex;
     bool isEmpty = true;
     this.PanSound(this.revealSound);
     this.revealSound.play_wait();
@@ -171,6 +181,9 @@ final class Minefield
         Speak(this.GetSurroundingMines());
         break;
       case Mine:
+        soundIndex = random(0, this.explosionSound.length - 1);
+        this.PanSound(this.explosionSound[soundIndex]);
+        this.explosionSound[soundIndex].play_wait();
         Prompt("boom!");
         isEmpty = false;
         break;
