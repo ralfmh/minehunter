@@ -39,6 +39,37 @@ final class Minefield
   }
   
   /*
+  ** Gets the number of mines on the 8 surrounding squares.
+  */
+  string GetSurroundingMines()
+  {
+    int mines = 0;
+    for (int scanX = this.x - 1; scanX < (this.x + 2); scanX++)
+    {
+      if (scanX < 0 || scanX > (this.grid.length - 1))
+      {
+        continue;
+      }
+      for (int scanY = this.y - 1; scanY < (this.y + 2); scanY++)
+      {
+        if (scanY < 0 || scanY > (this.grid[0].length - 1))
+        {
+          continue;
+        }
+        if (this.grid[scanX][scanY] == Mine)
+        {
+          mines++;
+        }
+      }
+    }
+    if (mines == 0)
+    {
+      return "Keine Minen";
+    }
+    return mines + " Minen";
+  }
+  
+  /*
   ** Moves to another position on the minefield.
   */
   void Move(
@@ -85,6 +116,7 @@ final class Minefield
     {
       case Empty:
         this.grid[this.x][this.y] = Revealed;
+        Speak(this.GetSurroundingMines());
         break;
       case Mine:
         Prompt("boom!");
@@ -99,6 +131,12 @@ final class Minefield
   */
   private void SpeakSquare()
   {
-    Speak(ascii_to_character(65 + this.x) + (this.y + 1));
+    string message;
+    message = ascii_to_character(65 + this.x) + (this.y + 1);
+    if (this.grid[this.x][this.y] == Revealed)
+    {
+      message += ": " + this.GetSurroundingMines();
+    }
+    Speak(message);
   }
 }
