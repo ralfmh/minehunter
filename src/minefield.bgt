@@ -8,7 +8,11 @@ final class Minefield
 {
   private Square[][] grid(10);  // Grid of minefield squares.
   
+  private sound@[] revealedStepSound; // Step sounds for revealed squares.
+  
   private sound revealSound;  // Reveal sound.
+  
+  private sound@[] unknownStepSound; // Step sounds for unknown squares.
   
   private int x;  // Current x position on the minefield.
   
@@ -40,6 +44,17 @@ final class Minefield
     string soundFile = "sound/reveal.ogg";
     Assert(this.revealSound.load(soundFile),
       "Unable to load '" + soundFile + "'");
+    for (int i = 1; i < 5; i++)
+    {
+      sound revealed;
+      sound unknown;
+      soundFile = "sound/revealed" + i + ".ogg";
+      Assert(revealed.load(soundFile), "Unable to load '" + soundFile + "'");
+      this.revealedStepSound.insert_last(revealed);
+      soundFile = "sound/unknown" + i + ".ogg";
+      Assert(unknown.load(soundFile), "Unable to load '" + soundFile + "'");
+      this.unknownStepSound.insert_last(unknown);
+    }
     this.SpeakSquare();
   }
   
@@ -128,6 +143,19 @@ final class Minefield
   }
   
   /*
+  ** Plays a random step sound.
+  */
+  private void PlayStepSound(
+    sound@[] stepSound  // Array of step sounds.
+  )
+  {
+    int index = random(0, stepSound.length - 1);
+    stepSound[index].stop();
+    PanSound(stepSound[index]);
+    stepSound[index].play();
+  }
+  
+  /*
   ** Reveals the current square. Returns true if the current square was empty,
   ** false if it contained a mine.
   */
@@ -160,6 +188,11 @@ final class Minefield
     if (this.grid[this.x][this.y] == Revealed)
     {
       message += ": " + this.GetSurroundingMines();
+      this.PlayStepSound(this.revealedStepSound);
+    }
+    else
+    {
+      this.PlayStepSound(this.unknownStepSound);
     }
     Speak(message);
   }
