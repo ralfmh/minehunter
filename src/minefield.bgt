@@ -7,6 +7,10 @@ final class Minefield
 {
   private Square[][] grid(10);  // Grid of minefield squares.
   
+  private int x;  // Current x position on the minefield.
+  
+  private int y;  // Current y position on the minefield.
+  
   /*
   ** Initializes a new instance of the Minefield class.
   */
@@ -14,7 +18,7 @@ final class Minefield
   {
     for (int i = 0; i < 10; i++)
     {
-      grid[i].resize(10);
+      this.grid[i].resize(10);
     }
     int x, y;
     for (int i = 0; i < 50; i++)
@@ -25,7 +29,18 @@ final class Minefield
         y = random(0, 9);
       } while ((x == y && (x == 0 || x == 9))
         || (x == 0 && y == 9) || (x == 9 && y == 0));
-      grid[x][y] = Mine;
+      this.grid[x][y] = Mine;
     }
+    this.x = 0;
+    this.y = 0;
+    this.SpeakSquare();
+  }
+  
+  /*
+  ** Speaks the current square.
+  */
+  private void SpeakSquare()
+  {
+    Speak(ascii_to_character(65 + this.x) + (this.y + 1));
   }
 }
