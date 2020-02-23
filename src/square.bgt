@@ -1,0 +1,9 @@
+/*
+** Represents a single square on the mine field.
+*/
+enum Square
+{
+  Empty,  // An empty square, which has not been revealed by the player.
+  Mine, // A square with a mine.
+  Revealed  // An empty square, which has been revealed by the player.
+}
