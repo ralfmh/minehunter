@@ -11,7 +11,7 @@ void main()
   show_game_window("Minehunter " + VERSION);
   Assert(UniversalSpeech.load("UniversalSpeech.dll"),
     "Unable to load UniversalSpeech");
-  Minefield minefield;
+  Minefield@ minefield = Minefield();
   while (true)
   {
     if (key_pressed(KEY_DOWN))
@@ -34,7 +34,7 @@ void main()
     {
       if (!minefield.Reveal())
       {
-        exit();
+        @minefield = Minefield();
       }
     }
     else if (key_down(KEY_LMENU) && key_pressed(KEY_F4))
