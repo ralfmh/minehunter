@@ -85,7 +85,7 @@ final class Minefield
       Assert(commentary.load(soundFile), "Unable to load '" + soundFile + "'");
       this.postExplosionCommentary.insert_last(commentary);
     }
-    for (int i = 1; i < 8; i++)
+    for (int i = 1; i < 10; i++)
     {
       sound commentary;
       soundFile = "sound/preboom" + i + ".ogg";
