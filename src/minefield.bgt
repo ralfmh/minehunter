@@ -10,6 +10,16 @@ final class Minefield
   
   private Square[][] grid(10);  // Grid of minefield squares.
   
+  /*
+  ** Played commentary sound after the explosion.
+  */
+  private sound@[] postExplosionCommentary;
+  
+  /*
+  ** Played commentary sound before the explosion.
+  */
+  private sound@[] preExplosionCommentary;
+  
   private sound@[] revealedStepSound; // Step sounds for revealed squares.
   
   private sound revealSound;  // Reveal sound.
@@ -63,6 +73,20 @@ final class Minefield
       soundFile = "sound/explosion" + i + ".ogg";
       Assert(explosion.load(soundFile), "Unable to load '" + soundFile + "'");
       this.explosionSound.insert_last(explosion);
+    }
+    for (int i = 1; i < 12; i++)
+    {
+      sound commentary;
+      soundFile = "sound/postboom" + i + ".ogg";
+      Assert(commentary.load(soundFile), "Unable to load '" + soundFile + "'");
+      this.postExplosionCommentary.insert_last(commentary);
+    }
+    for (int i = 1; i < 8; i++)
+    {
+      sound commentary;
+      soundFile = "sound/preboom" + i + ".ogg";
+      Assert(commentary.load(soundFile), "Unable to load '" + soundFile + "'");
+      this.preExplosionCommentary.insert_last(commentary);
     }
     this.SpeakSquare();
   }
@@ -170,8 +194,9 @@ final class Minefield
   */
   bool Reveal()
   {
-    int soundIndex;
+    int commentary;
     bool isEmpty = true;
+    int soundIndex;
     this.PanSound(this.revealSound);
     this.revealSound.play_wait();
     switch (this.grid[this.x][this.y])
@@ -181,9 +206,20 @@ final class Minefield
         Speak(this.GetSurroundingMines());
         break;
       case Mine:
+        commentary = random(0, 1);
+        if (commentary == 0)
+        {
+          this.preExplosionCommentary[random(0,
+            this.preExplosionCommentary.length - 1)].play_wait();
+        }
         soundIndex = random(0, this.explosionSound.length - 1);
         this.PanSound(this.explosionSound[soundIndex]);
         this.explosionSound[soundIndex].play_wait();
+        if (commentary == 1)
+        {
+          this.postExplosionCommentary[random(0,
+            this.postExplosionCommentary.length - 1)].play_wait();
+        }
         Prompt("boom!");
         isEmpty = false;
         break;
