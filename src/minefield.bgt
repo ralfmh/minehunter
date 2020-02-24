@@ -249,6 +249,15 @@ final class Minefield
   }
   
   /*
+  ** Speaks the current score.
+  */
+  void SpeakScore()
+  {
+    Speak(this.revealedSquares + " Felder ausgegraben, "
+      + MillisecondsToTimeString(this.gameTimer.elapsed));
+  }
+  
+  /*
   ** Speaks the current square.
   */
   private void SpeakSquare()

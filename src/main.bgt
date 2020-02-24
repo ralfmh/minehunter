@@ -49,6 +49,10 @@ void main()
         @minefield = Minefield(mines);
       }
     }
+    else if (key_pressed(KEY_S))
+    {
+      minefield.SpeakScore();
+    }
     else if (key_down(KEY_LMENU) && key_pressed(KEY_F4))
     {
       exit();
